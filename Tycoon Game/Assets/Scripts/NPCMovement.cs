@@ -10,7 +10,7 @@ public class NPCMovement : MonoBehaviour {
     int VisitedObjects = 0;
     int ObjectsToVisit = 0;
     float DistanceToObject = 0f;
-    float WaitTime = 2f;
+    public float WaitTime = 2f;
 
     List<Transform> Waypoints = new List<Transform>();
     public Transform Exit;
@@ -47,6 +47,7 @@ public class NPCMovement : MonoBehaviour {
         if (VisitedObjects < ObjectsToVisit)
         {
             DistanceToObject = Vector3.Distance(Waypoints[VisitedObjects].position, transform.position);
+            WaitTime = Waypoints[VisitedObjects].gameObject.GetComponent<DisplayItem>().ReturnWaitingAmount();
         }
 
         if (ObjectsToVisit > VisitedObjects && DistanceToObject > 2f)
