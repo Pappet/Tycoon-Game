@@ -5,17 +5,19 @@ using UnityEngine.AI;
 
 public class NPCMovement : MonoBehaviour {
 
-    NavMeshAgent navMeshAgent;
-    float Timer = 0f;
+    public Transform Exit;
+    public GameManager gameManager;
+
     int VisitedObjects = 0;
     int ObjectsToVisit = 0;
     float DistanceToObject = 0f;
-    public float WaitTime = 2f;
+    float MinimalDistance = 2f;
+    float Timer = 0f;
+    float WaitTime = 2f;
+    bool ReachedWaypoint = false;
 
     List<Transform> Waypoints = new List<Transform>();
-    public Transform Exit;
-    public GameManager gameManager;
-    public bool ReachedExit = false;
+    NavMeshAgent navMeshAgent;
 
     // Use this for initialization
     void Start()
@@ -50,37 +52,54 @@ public class NPCMovement : MonoBehaviour {
             WaitTime = Waypoints[VisitedObjects].gameObject.GetComponent<DisplayItem>().ReturnWaitingAmount();
         }
 
-        if (ObjectsToVisit > VisitedObjects && DistanceToObject > 2f)
+        if (ObjectsToVisit > VisitedObjects && DistanceToObject > MinimalDistance && !ReachedWaypoint)
         {            
             MoveToWaypoint(Waypoints[VisitedObjects]);
         }
 
-        if (DistanceToObject < 2f && Timer <= WaitTime)
+        if (DistanceToObject < MinimalDistance && Timer <= WaitTime)
         {
-            //navMeshAgent.enabled = false;
+            ReachedWaypoint = true;
             Timer += Time.deltaTime;
         }
 
         if (Timer >= WaitTime && ObjectsToVisit > VisitedObjects)
         {
-            //navMeshAgent.enabled = true;
             VisitedObjects++;
+            ReachedWaypoint = false;
             Timer = 0;
         }
 
-        if (VisitedObjects == ObjectsToVisit)
+        if (VisitedObjects == ObjectsToVisit && !ReachedWaypoint)
         {
-            //navMeshAgent.enabled = true;
             MoveToWaypoint(Exit);
         }
 
-        if (Vector3.Distance(Exit.position, transform.position) <= 2f && VisitedObjects == ObjectsToVisit)
+        if (Vector3.Distance(Exit.position, transform.position) <= MinimalDistance && VisitedObjects == ObjectsToVisit)
         {
-            ReachedExit = true;
             gameManager.RemoveVisitor(this.gameObject);
         }
     }
-    
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Debug.Log("Entered...");
+        if (other.CompareTag("Museum"))
+        {
+            Debug.Log("...Museum");
+            gameManager.VisitorCountInHouse++;
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        Debug.Log("Exited...");
+        if (other.CompareTag("Museum"))
+        {
+            Debug.Log("...Museum");
+            gameManager.VisitorCountInHouse--;
+        }
+    }
+
     void MoveToWaypoint(Transform way)
     {
         navMeshAgent.destination = way.position;
