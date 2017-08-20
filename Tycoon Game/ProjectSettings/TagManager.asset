@@ -5,8 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Exit
-  - DisplayItem
   - Museum
+  - Display
+  - Item
   layers:
   - Default
   - TransparentFX

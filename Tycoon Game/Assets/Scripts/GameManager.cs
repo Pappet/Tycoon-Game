@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour {
 
     public Transform Spawnpoint;
-
     public GameObject Visitor;
 
     public Text VisitorCountText;
@@ -44,6 +43,7 @@ public class GameManager : MonoBehaviour {
     public void AddVisitor()
     {
         GameObject g = Instantiate(Visitor, Spawnpoint.position, Quaternion.identity);
+        g.transform.SetParent(this.transform);
         Visitors.Add(g);
         VisitorCount++;        
     }

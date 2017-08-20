@@ -34,7 +34,7 @@ public class NPCMovement : MonoBehaviour {
             Exit = GameObject.FindGameObjectWithTag("Exit").GetComponent<Transform>();
         }
 
-        foreach (GameObject g in GameObject.FindGameObjectsWithTag("DisplayItem"))
+        foreach (GameObject g in GameObject.FindGameObjectsWithTag("Display"))
         {
             Waypoints.Add(g.transform);
             ObjectsToVisit++;
@@ -49,7 +49,7 @@ public class NPCMovement : MonoBehaviour {
         if (VisitedObjects < ObjectsToVisit)
         {
             DistanceToObject = Vector3.Distance(Waypoints[VisitedObjects].position, transform.position);
-            WaitTime = Waypoints[VisitedObjects].gameObject.GetComponent<DisplayItem>().ReturnWaitingAmount();
+            WaitTime = Waypoints[VisitedObjects].gameObject.GetComponent<Display>().ReturnWaitingAmount();
         }
 
         if (ObjectsToVisit > VisitedObjects && DistanceToObject > MinimalDistance && !ReachedWaypoint)
